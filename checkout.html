@@ -1,0 +1,226 @@
+<!--A Design by W3layouts
+Author: W3layout
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Medieval Shop</title>
+<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="css/style.css" rel='stylesheet' type='text/css' />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<script src="js/jquery.min.js"></script>
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+            $(".dropdown img.flag").addClass("flagvisibility");
+
+            $(".dropdown dt a").click(function() {
+                $(".dropdown dd ul").toggle();
+            });
+                        
+            $(".dropdown dd ul li a").click(function() {
+                var text = $(this).html();
+                $(".dropdown dt a span").html(text);
+                $(".dropdown dd ul").hide();
+                $("#result").html("Selected value is: " + getSelectedValue("sample"));
+            });
+                        
+            function getSelectedValue(id) {
+                return $("#" + id).find("dt a span.value").html();
+            }
+
+            $(document).bind('click', function(e) {
+                var $clicked = $(e.target);
+                if (! $clicked.parents().hasClass("dropdown"))
+                    $(".dropdown dd ul").hide();
+            });
+
+
+            $("#flagSwitcher").click(function() {
+                $(".dropdown img.flag").toggleClass("flagvisibility");
+            });
+        });
+     </script>
+ </head>
+<body>
+<div id="app">
+	<div class="header">
+		<div class="container">
+			<div class="row">
+			  <div class="col-md-12">
+				 <div class="header-left">
+					 <div class="logo">
+						<a href="index.html"><img src="images/logo.png" alt=""/></a>
+					 </div>
+					 <div class="menu">
+						  <a class="toggleMenu" href="#"><img src="images/nav.png" alt="" /></a>
+						    <ul class="nav" id="nav">
+						    	<li><a href="shop.html">Shop</a></li>
+                  <li><a href="upload.html" v-if="localStorage.getItem('token') !== null">Upload Weapon</a></li>
+                  <!-- <li class = "current"><a href="checkout.html" v-if="localStorage.getItem('token') !== null">Cart</a></li> -->
+                  <li><a href="register.html" v-if="localStorage.getItem('token') === null">Sign Up</a></li>
+                  <li><a href="login.html" v-if="localStorage.getItem('token') === null">Login</a></li>
+                  <li><a href="#" v-on:click="logout" v-if="localStorage.getItem('token') !== null">Logout</a></li>									
+								<div class="clear"></div>
+							</ul>
+							<script type="text/javascript" src="js/responsive-nav.js"></script>
+				    </div>							
+	    		    <div class="clear"></div>
+	    	    </div>
+            <div class="header_right">
+          <!-- start search-->
+          <script src="js/classie.js"></script>
+          <script src="js/uisearch.js"></script>        
+          <ul class="icon1 sub-icon1 profile_img">
+         <li><a class="active-icon c1" href="#"> </a>
+          <ul class="sub-icon1 list">
+            <div class="product_control_buttons">
+                <a href="#"><img src="images/close_edit.png" alt=""/></a>
+            </div>
+             <div class="cart" v-for="(cartItem,index) in listCart">
+             <li class="list_img"><img :src="cartItem.picture" alt=""/></li>
+             <li class="list_desc"><h4><a href="#">{{cartItem.name}}</a></h4><span class="actual">{{cartItem.price}}</span></li>
+             <button type ="button" v-on:click="cancelCart(index)">Delete</button>
+             </div>
+             <div class="clear"></div>
+             <div class="check_button"><a href="checkout.html">Check out</a></div>    
+            </div>
+						  <div class="clear"></div>
+						</ul>
+					 </li>
+				   </ul>
+		        <div class="clear"></div>
+	       </div>
+	      </div>
+		 </div>
+	    </div>
+     <div class="main">
+      <div class="shop_top">
+		<div class="container">
+      <div class="checkcart" v-if="listCart === null">
+        <h4 class="title">Shopping cart is empty</h4>
+  			<p class="cart">You have no items in your shopping cart.<br>Click<a href="shop.html"> here</a> to continue shopping</p>
+  	     
+      </div>
+			
+  <table class="table" v-if="listCart !== null">
+  <thead class="thead-inverse">
+    <tr>
+      <th>No</th>
+      <th>Item</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="(item,index) in listCart">
+      <td>{{index + 1}}</td>
+      <td>{{item.name}}</td>
+      <td>${{item.price}}</td>
+    </tr>
+  </tbody>
+</table>
+<h3>Total Price: ${{totalPrice}} </h3>
+<br>
+<button type="button" class="button" v-on:click ="confirmPurchase()" v-if="listCart !== null">Purchase</button>
+	   </div>
+	  </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  var credentials = new Vue({
+    el: '#app',
+    data:{
+    },
+    methods:{
+    logout(){
+      localStorage.clear()
+      window.location ='index.html'
+    },
+    addtoCart(id){
+    axios.get(`http://localhost:3000/getItem/${id}`)
+    .then(response=>{
+      var currentStock = response.data.stock
+      axios.post(`http://localhost:3000/editItem/${response.data._id}`,{
+        stock: currentStock-1
+      })
+      .then(res=>{
+        
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+    })
+  },
+  purchase(){
+    axios.get(`http://localhost:3000/items`)
+    .then(response=>{
+      var cart = JSON.parse(localStorage.getItem('cart'))
+      for(var i = 0; i < cart.length; i++){
+        for(var j = 0; j < response.data.length; j++){
+        if(cart[i]._id === response.data[j]._id){
+        var estock = response.data[j]- 1 
+          if(estock < 0){
+            alert(`insufficient Stock Item`)
+            location.reload()
+            }
+            else{
+              axios.post(`http://localhost:3000/editItem/${cart[i]._id}`,{
+                stock: cart[i].stock - 1
+              })
+            }    
+          }
+        }
+      }
+      localStorage.removeItem('cart')
+      alert('Thank You for Shopping With Us!')
+      window.location = "index.html"
+      })
+    },
+    confirmPurchase(){
+      if(confirm(`Are You Sure You Want To Purchase All of These Items?`)){
+        this.purchase()
+      }
+      else{
+        return false
+      }
+    },
+    cancelCart(index){
+      var storedItems = JSON.parse(localStorage.getItem('cart'))
+      storedItems.splice(index,1)
+      localStorage.setItem('cart',JSON.stringify(storedItems))
+      location.reload() 
+    }
+  },
+  created: function(){
+    this.totalPrice()
+  },
+  computed:{
+    listCart(){
+      return JSON.parse(localStorage.getItem('cart'))
+    },
+    totalPrice(){
+      var items = JSON.parse(localStorage.getItem('cart'))
+      if(items === null){
+        alert('Please login first')
+        window.location = 'login.html'
+      }
+      else{
+        var tp = 0
+        for(var x = 0; x < items.length; x++){
+           tp += items[x].price
+        }
+        return tp
+      }  
+      }  
+  }
+})  
+	</script> 
+</body>	
+</html>

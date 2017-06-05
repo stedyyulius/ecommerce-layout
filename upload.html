@@ -1,0 +1,248 @@
+<!--A Design by W3layouts
+Author: W3layout
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Medieval Shop</title>
+<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="css/style.css" rel='stylesheet' type='text/css' />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<script src="js/jquery.min.js"></script>
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+            $(".dropdown img.flag").addClass("flagvisibility");
+
+            $(".dropdown dt a").click(function() {
+                $(".dropdown dd ul").toggle();
+            });
+                        
+            $(".dropdown dd ul li a").click(function() {
+                var text = $(this).html();
+                $(".dropdown dt a span").html(text);
+                $(".dropdown dd ul").hide();
+                $("#result").html("Selected value is: " + getSelectedValue("sample"));
+            });
+                        
+            function getSelectedValue(id) {
+                return $("#" + id).find("dt a span.value").html();
+            }
+
+            $(document).bind('click', function(e) {
+                var $clicked = $(e.target);
+                if (! $clicked.parents().hasClass("dropdown"))
+                    $(".dropdown dd ul").hide();
+            });
+
+
+            $("#flagSwitcher").click(function() {
+                $(".dropdown img.flag").toggleClass("flagvisibility");
+            });
+        });
+     </script>
+ </head>
+<body>
+<div id="app">
+	<div class="header">
+		<div class="container">
+			<div class="row">
+			  <div class="col-md-12">
+				 <div class="header-left">
+					 <div class="logo">
+						<a href="index.html"><img src="images/logo.png" alt=""/></a>
+					 </div>
+					 <div class="menu">
+						  <a class="toggleMenu" href="#"><img src="images/nav.png" alt="" /></a>
+						    <ul class="nav" id="nav">
+						    	<li><a href="shop.html">Shop</a></li>
+                  <li class="current"><a href="upload.html" v-if="localStorage.getItem('token') !== null">Upload Weapon</a></li>
+                  <li><a href="register.html" v-if="localStorage.getItem('token') === null">Sign Up</a></li>
+                  <li><a href="login.html" v-if="localStorage.getItem('token') === null">Login</a></li>
+                  <li><a href="#" v-on:click="logout" v-if="localStorage.getItem('token') !== null">Logout</a></li>									
+								<div class="clear"></div>
+							</ul>
+							<script type="text/javascript" src="js/responsive-nav.js"></script>
+				    </div>							
+	    		    <div class="clear"></div>
+	    	    </div>
+	            <div class="header_right">
+	    		  <!-- start search-->
+						<!----search-scripts---->
+						<script src="js/classie.js"></script>
+						<script src="js/uisearch.js"></script>
+						<script>
+							new UISearch( document.getElementById( 'sb-search' ) );
+						</script>
+            <ul class="icon1 sub-icon1 profile_img" v-if="localStorage.getItem('token') !== null">
+           <li><a class="active-icon c1" href="#"> </a>
+            <ul class="sub-icon1 list">
+              <div class="product_control_buttons">
+                  <a href="#"><img src="images/close_edit.png" alt=""/></a>
+              </div>
+               <div class="cart" v-for="(cartItem,index) in listCart">
+               <li class="list_img"><img :src="cartItem.picture" alt=""/></li>
+               <li class="list_desc"><h4><a href="#">{{cartItem.name}}</a></h4><span class="actual">{{cartItem.price}}</span></li>
+               <button type ="button" v-on:click="cancelCart(index)">Delete</button>
+               </div>
+               <div class="clear"></div>
+               <div class="check_button"><a href="checkout.html">Check out</a></div>    
+              </div>
+              <div class="clear"></div>
+            </ul>
+           </li>
+           </ul>
+		        <div class="clear"></div>
+	       </div>
+	      </div>
+		 </div>
+	    </div>
+      <div class="container">
+  				<div class="col-md-6">
+  				 <div class="login-title">
+  	        <h4 class="title"><b>Upload Weapon</b></h4>
+  					<div id="loginbox" class="loginbox">
+  						<form action=""id="login-form">
+  						  <fieldset class="input">
+  						    <p id="login-form-username">
+  						      <label for="modlgn_username"><b>Weapon Name</b></label>
+  						      <input id="modlgn_username" type="text" v-model="name" name="username" class="inputbox" size="18" autocomplete="off">
+  						    </p>
+                  <p id="login-form-username">
+  						      <label for="modlgn_username"><b>Description</b></label>
+  						      <input id="modlgn_username" type="text" v-model="description" name="username" class="inputbox" size="18" autocomplete="off">
+  						    </p>
+                  <p id="login-form-username">
+  						      <label for="modlgn_username"><b>Price ($)</b></label>
+  						      <input id="num" type="text" v-model="price" name="username" class="num" size="18" autocomplete="off" placeholder="$">
+  						    </p>
+                  <p id="login-form-username">
+                    <label for="modlgn_username"><b>Stock</b></label>
+                    <input id="num" type="text" v-model="stock" name="username" class="num" size="18" autocomplete="off">
+                  </p>
+                  <div v-if="!picture">
+                         <label for="modlgn_username"><b>Image</b></label>
+                       <!-- <input type="file" @change="onFileChange">
+                       OR -->
+                       <input type="text" name="" v-model="picture" placeholder="Image Url">   
+                       </div>
+                           
+                     <div v-else>
+                       <img class="uploaded" :src="picture" />
+                       <button @click="removeImage">Remove image</button>
+                     </div>
+                    <label for="modlgn_username"><b>Category</b></label>
+     						    <select v-model="category">
+                       <option disabled value="">Select Category</option>
+     						       <option>Sword</option>
+                       <option>Axe</option>
+                       <option>Spear</option>
+                       <option>Mace</option>
+                       <option>Bow</option>
+                       <option>Dagger</option>
+                       <option>Katar</option>
+                       <option>Wand</option>
+                       <option>Shield</option>
+     						    </select>
+  						    <div class="remember">
+  							    <input type="submit" v-on:click.prevent="sell">     
+  							 </div>
+  						  </fieldset>
+  						 </form>
+  					</div>
+  			      </div>
+  				 <div class="clear"></div>
+  			  </div>
+  			</div>
+  </div>
+<script src="http://plugin.tinypic.com/j/plugin.js" type="text/javascript"></script>
+  <script>
+  var listItem = new Vue({
+    el: '#app',
+    data: {
+      cart:[],
+      name:'',
+      price:0,
+      stock:0,
+      description:'',
+      category:'',
+      picture:''
+    },
+    methods:{
+      onFileChange(e) { 
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = (e) => {
+        console.log(e);
+         vm.picture = e.target.result;
+        //vm.picture = e
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage: function (e) {
+      this.picture = '';
+    },
+      sell(){
+        var self = this;
+        var check = /((jpg)|(JPG)|(JPEG)|(PNG)|(jpeg)|(png))/gi
+        var format = check.test(self.picture)
+        if(format === false){
+          alert('Image have to be in JPEG,JPG or PNG file!')
+          location.reload()
+        }
+       else{
+          axios.post(`http://localhost:3000/createItem`,{
+            name: self.name,
+            price: self.price,
+            stock: self.stock,
+            category: self.category.toLowerCase(),
+            description: self.description,
+            picture: self.picture
+          })
+          .then(response=>{
+            alert(`${response.data.name} Has Successfully Uploaded!`)
+            window.location = 'shop.html'
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+        }
+      },      
+      logout(){
+        localStorage.clear()
+        window.location ='index.html'
+      },
+        cancelCart(index){
+          var storedItems = JSON.parse(localStorage.getItem('cart'))
+          storedItems.splice(index,1)
+          localStorage.setItem('cart',JSON.stringify(storedItems))
+          location.reload() 
+        }       
+    },
+  computed:{
+    listCart(){
+      localStorage.removeItem('category')
+      //var thiscart = this;
+     return JSON.parse(localStorage.getItem('cart'))
+      // thiscart.cart = cartList      
+    }
+  }
+})
+  </script> 
+</body>	
+</html>

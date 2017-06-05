@@ -1,0 +1,184 @@
+<!--A Design by W3layouts
+Author: W3layout
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Medieval Shop</title>
+<link href="/css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="/css/style.css" rel='stylesheet' type='text/css' />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<script src="/js/jquery.min.js"></script>
+
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+            $(".dropdown img.flag").addClass("flagvisibility");
+
+            $(".dropdown dt a").click(function() {
+                $(".dropdown dd ul").toggle();
+            });
+                        
+            $(".dropdown dd ul li a").click(function() {
+                var text = $(this).html();
+                $(".dropdown dt a span").html(text);
+                $(".dropdown dd ul").hide();
+                $("#result").html("Selected value is: " + getSelectedValue("sample"));
+            });
+                        
+            function getSelectedValue(id) {
+                return $("#" + id).find("dt a span.value").html();
+            }
+
+            $(document).bind('click', function(e) {
+                var $clicked = $(e.target);
+                if (! $clicked.parents().hasClass("dropdown"))
+                    $(".dropdown dd ul").hide();
+            });
+
+
+            $("#flagSwitcher").click(function() {
+                $(".dropdown img.flag").toggleClass("flagvisibility");
+            });
+        });
+     </script>
+</head>
+<body>
+  <div id="app">
+	<div class="header">
+		<div class="container">
+			<div class="row">
+			  <div class="col-md-12">
+				 <div class="header-left">
+					 <div class="logo">
+						<a href="/index.html"><img src="/images/logo.png" alt=""/></a>
+					 </div>
+           <div class="menu">
+						  <a class="toggleMenu" href="#"><img src="/images/nav.png" alt="" /></a>
+						    <ul class="nav" id="nav">
+						    	<li><a href="../shop.html">Shop</a></li>
+                  <div class="dropdown">
+                    <li  class ='current' id ='category'><a href="#">Category</a></li>
+                    <div class="dropdown-content">
+                      <a href="sword.html">Sword</a>
+                      <a href="axe.html">Axe</a>
+                      <a href="spear.html">Spear</a>
+                      <a href="mace.html">Mace</a>
+                      <a href="bow.html">Bow</a>
+                      <a href="dagger.html">Dagger</a>
+                      <a class='on' href="katar.html">Katar</a>
+                      <a href="wand.html">Wand</a>
+                      <a href="shield.html">Shield</a>          
+                    </div> 
+                      </div>  
+						    	<!-- <li><a href="team.html">Team</a></li>
+						    	<li><a href="experiance.html">Events</a></li>
+						    	<li><a href="experiance.html">Experiance</a></li>
+						    	<li><a href="shop.html">Company</a></li> -->
+                  <li><a href="/checkout.html" v-if="localStorage.getItem('token') !== null">Cart</a></li>
+                  <li><a href="/register.html" v-if="localStorage.getItem('token') === null">Sign Up</a></li>
+                  <li><a href="/login.html" v-if="localStorage.getItem('token') === null">Login</a></li>
+                  <li><a href="#" v-on:click="logout" v-if="localStorage.getItem('token') !== null">Logout</a></li>	 								
+								<div class="clear"></div>
+							</ul>
+							<script type="text/javascript" src="/js/responsive-nav.js"></script>
+				    </div>												
+	    		    <div class="clear"></div>
+	    	    </div>
+	            <div class="header_right">
+	    		  <!-- start search-->
+						<script src="/js/classie.js"></script>
+						<script src="/js/uisearch.js"></script>        
+            <ul class="icon1 sub-icon1 profile_img">
+           <li><a class="active-icon c1" href="#"> </a>
+            <ul class="sub-icon1 list">
+              <div class="product_control_buttons">
+                  <a href="#"><img src="/images/close_edit.png" alt=""/></a>
+              </div>
+               <div class="clear"></div>
+               <div class="check_button"><a href="/index.html" onclick="sucessbuy()">Check out</a></div>    
+              </div>
+              <div class="clear"></div>
+            </ul>
+           </li>
+           </ul>
+					 </li>
+				   </ul>
+		        <div class="clear"></div>
+	       </div>
+	      </div>
+		 </div>
+	    </div>
+	 
+     <div class="main">
+      <div class="shop_top">      
+		<div class="container">  
+			<div class="row shop_box-top">
+				<div class="col-md-3 shop_box" v-for='item in items'><a href="../single.html">
+					<img :src="item.picture" class="img-responsive" alt=""/>  
+					<div class="shop_desc">
+						<h3><a href="#">{{item.name}}</a></h3>
+						<p>Stock: {{item.stock}}</p>
+						<span class="actual">{{item.price}}</span><br>
+						<ul class="buttons">
+							<li class="cart"><a href="#">Add To Cart</a></li>	
+							<div class="clear"> </div>
+					    </ul>
+				    </div>
+				</a></div>			
+			</div>
+		 </div>
+	   </div>
+	  </div>
+    </div>
+    <script>
+      new UISearch( document.getElementById( 'sb-search' ) );
+    </script>
+  <script>
+ function sucessbuy() {
+   alert("Thank You for Shoping With Us!");
+ }
+ </script>
+       
+  <script>
+  var listItem = new Vue({
+    el: '#app',
+    data: {
+      items: []
+    },
+    methods:{      
+      listShop(){
+        var self = this;
+        axios.get('http://localhost:3000/search/katar')
+        .then(response=>{
+          if(response.data.length > 0){
+            console.log(response.data);
+            self.items = response.data
+          }
+          else{
+            window.location = 'null.html'
+          }      
+        })
+        .catch(err=>{
+          console.log(err);
+        })
+      },
+      logout(){
+        localStorage.clear()
+        window.location ='index.html'
+      }    
+    },
+    created: function () {
+      this.listShop()
+    }
+  })
+  </script>    
+</body>	
+</html>
